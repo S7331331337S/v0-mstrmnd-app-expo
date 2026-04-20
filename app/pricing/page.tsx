@@ -8,7 +8,8 @@ import {
   Shield, 
   Users, 
   Sparkles,
-  ArrowRight
+  ArrowRight,
+  ChevronDown
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Navigation } from "@/components/navigation"
@@ -94,35 +95,136 @@ const highlights = [
 
 export default function PricingPage() {
   const [billing, setBilling] = useState<"monthly" | "annual">("annual")
+  const [expandedPlan, setExpandedPlan] = useState<string | null>(null)
 
   return (
     <main className="relative min-h-screen noise-overlay">
       <ParticlesBackground />
       <Navigation />
       
-      <div className="pt-24 pb-16">
+      <div className="pt-20 pb-16">
         <div className="container mx-auto px-4">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center max-w-4xl mx-auto mb-16"
+            className="text-center max-w-4xl mx-auto mb-12"
           >
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 text-balance">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-balance">
               New plans,{" "}
               <span className="text-muted-foreground italic">more value</span>
             </h1>
-            <p className="text-lg text-muted-foreground mb-8 text-pretty">
-              Choose the perfect plan for your needs. All plans include core features.
+            <p className="text-muted-foreground mb-6 text-pretty">
+              Choose the perfect plan for your needs.
             </p>
+
+            {/* Billing Toggle */}
+            <div className="inline-flex items-center p-1 bg-secondary/40 rounded-full">
+              <button 
+                className={cn(
+                  "px-4 py-2 rounded-full text-sm font-medium transition-colors",
+                  billing === "monthly" ? "bg-foreground text-background" : "text-muted-foreground"
+                )}
+                onClick={() => setBilling("monthly")}
+              >
+                Monthly
+              </button>
+              <button 
+                className={cn(
+                  "px-4 py-2 rounded-full text-sm font-medium transition-colors",
+                  billing === "annual" ? "bg-foreground text-background" : "text-muted-foreground"
+                )}
+                onClick={() => setBilling("annual")}
+              >
+                Annual
+              </button>
+            </div>
           </motion.div>
 
-          {/* Pricing Grid */}
+          {/* Mobile: Collapsible Cards */}
+          <div className="md:hidden space-y-3 mb-12">
+            {plans.map((plan, index) => (
+              <motion.div
+                key={plan.name}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 + index * 0.05 }}
+                className={cn(
+                  "glass-card rounded-2xl overflow-hidden",
+                  plan.highlighted && "ring-1 ring-primary/50"
+                )}
+              >
+                {plan.highlighted && (
+                  <div className="h-1 bg-gradient-to-r from-primary to-chart-2" />
+                )}
+                
+                <button
+                  onClick={() => setExpandedPlan(expandedPlan === plan.name ? null : plan.name)}
+                  className="w-full p-4 flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-4">
+                    <div>
+                      <h3 className="font-semibold text-left">{plan.name}</h3>
+                      <div className="text-xl font-bold">{plan.price}</div>
+                    </div>
+                  </div>
+                  <motion.div
+                    animate={{ rotate: expandedPlan === plan.name ? 180 : 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <ChevronDown className="w-5 h-5 text-muted-foreground" />
+                  </motion.div>
+                </button>
+
+                <motion.div
+                  initial={false}
+                  animate={{
+                    height: expandedPlan === plan.name ? "auto" : 0,
+                    opacity: expandedPlan === plan.name ? 1 : 0
+                  }}
+                  transition={{ duration: 0.3 }}
+                  className="overflow-hidden"
+                >
+                  <div className="px-4 pb-4">
+                    <p className="text-sm text-muted-foreground mb-4">
+                      {plan.billing || plan.description}
+                    </p>
+                    <p className="text-sm mb-4">{plan.tagline}</p>
+                    
+                    <Button
+                      className={cn(
+                        "w-full mb-4 h-11 rounded-xl",
+                        plan.highlighted
+                          ? "bg-foreground text-background hover:bg-foreground/90"
+                          : "bg-secondary/60 hover:bg-secondary"
+                      )}
+                      asChild
+                    >
+                      <Link href={plan.name === "Enterprise" ? "#" : "/app"}>
+                        {plan.cta}
+                      </Link>
+                    </Button>
+
+                    <div className="space-y-2">
+                      {plan.features.map((feature, i) => (
+                        <div key={i} className="flex items-start gap-2 text-sm">
+                          <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                          <span>{feature}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </motion.div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Desktop: Grid */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-16"
+            className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-4 mb-16"
           >
             {plans.map((plan, index) => (
               <motion.div
@@ -140,32 +242,7 @@ export default function PricingPage() {
                 )}
                 
                 <div className="mb-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-semibold">{plan.name}</h3>
-                    {(plan.name === "Pro" || plan.name === "Business") && (
-                      <div className="flex rounded-lg bg-secondary/50 p-0.5 text-xs">
-                        <button 
-                          className={cn(
-                            "px-2 py-1 rounded-md transition-colors",
-                            billing === "monthly" ? "bg-background" : "text-muted-foreground"
-                          )}
-                          onClick={() => setBilling("monthly")}
-                        >
-                          Monthly
-                        </button>
-                        <button 
-                          className={cn(
-                            "px-2 py-1 rounded-md transition-colors",
-                            billing === "annual" ? "bg-background" : "text-muted-foreground"
-                          )}
-                          onClick={() => setBilling("annual")}
-                        >
-                          Annual
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                  
+                  <h3 className="font-semibold mb-2">{plan.name}</h3>
                   <div className="text-3xl font-bold mb-1">{plan.price}</div>
                   <div className="text-sm text-muted-foreground">
                     {plan.billing || plan.description}
@@ -178,9 +255,9 @@ export default function PricingPage() {
 
                 <Button
                   className={cn(
-                    "w-full mb-6 min-h-[44px]",
+                    "w-full mb-6 h-11 rounded-xl",
                     plan.highlighted
-                      ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                      ? "bg-foreground text-background hover:bg-foreground/90"
                       : "bg-secondary/50 hover:bg-secondary"
                   )}
                   asChild
@@ -213,21 +290,21 @@ export default function PricingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="glass-card rounded-2xl p-6 md:p-8"
+            className="glass-card rounded-2xl p-4 md:p-6"
           >
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
               {highlights.map((highlight, index) => (
                 <motion.div
                   key={highlight.text}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.6 + index * 0.1 }}
-                  className="flex items-center gap-4"
+                  className="flex items-center gap-3 flex-1"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <highlight.icon className="w-6 h-6 text-primary" />
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <highlight.icon className="w-5 h-5 text-primary" />
                   </div>
-                  <span className="text-lg font-semibold">{highlight.text}</span>
+                  <span className="font-medium text-sm">{highlight.text}</span>
                 </motion.div>
               ))}
             </div>
@@ -238,14 +315,13 @@ export default function PricingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
-            className="mt-16 text-center"
+            className="mt-12 text-center"
           >
-            <h2 className="text-2xl font-bold mb-4">Need a custom solution?</h2>
-            <p className="text-muted-foreground mb-6 max-w-xl mx-auto text-pretty">
-              Contact our sales team to discuss enterprise pricing, custom integrations,
-              and dedicated support options.
+            <h2 className="text-xl font-bold mb-3">Need a custom solution?</h2>
+            <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto text-pretty">
+              Contact our sales team to discuss enterprise pricing and dedicated support.
             </p>
-            <Button size="lg" variant="outline" className="min-h-[48px]">
+            <Button variant="outline" className="h-11 rounded-xl">
               Contact Sales
               <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
