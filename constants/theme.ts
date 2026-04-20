@@ -1,0 +1,157 @@
+export const Colors = {
+  dark: {
+    background: "#000000",
+    foreground: "#FFFFFF",
+    card: "#0A0A0F",
+    cardForeground: "#FFFFFF",
+    muted: "#18181B",
+    mutedForeground: "#71717A",
+    accent: "#00D9FF",
+    accentForeground: "#000000",
+    border: "#27272A",
+    ring: "#00D9FF",
+    success: "#22C55E",
+    warning: "#F59E0B",
+    error: "#EF4444",
+    secondary: "#1C1C1E",
+    tertiary: "#2C2C2E",
+  },
+  light: {
+    background: "#FFFFFF",
+    foreground: "#000000",
+    card: "#F5F5F5",
+    cardForeground: "#000000",
+    muted: "#E5E5E5",
+    mutedForeground: "#737373",
+    accent: "#00B8D9",
+    accentForeground: "#FFFFFF",
+    border: "#E5E5E5",
+    ring: "#00B8D9",
+    success: "#16A34A",
+    warning: "#D97706",
+    error: "#DC2626",
+    secondary: "#F2F2F7",
+    tertiary: "#E5E5EA",
+  },
+};
+
+export const Spacing = {
+  xs: 4,
+  sm: 8,
+  md: 12,
+  lg: 16,
+  xl: 20,
+  "2xl": 24,
+  "3xl": 32,
+  "4xl": 40,
+  "5xl": 48,
+};
+
+export const BorderRadius = {
+  sm: 6,
+  md: 10,
+  lg: 14,
+  xl: 18,
+  "2xl": 24,
+  full: 9999,
+};
+
+export const Typography = {
+  largeTitle: {
+    fontSize: 34,
+    fontWeight: "700" as const,
+    lineHeight: 41,
+    letterSpacing: 0.37,
+  },
+  title1: {
+    fontSize: 28,
+    fontWeight: "700" as const,
+    lineHeight: 34,
+    letterSpacing: 0.36,
+  },
+  title2: {
+    fontSize: 22,
+    fontWeight: "700" as const,
+    lineHeight: 28,
+    letterSpacing: 0.35,
+  },
+  title3: {
+    fontSize: 20,
+    fontWeight: "600" as const,
+    lineHeight: 25,
+    letterSpacing: 0.38,
+  },
+  headline: {
+    fontSize: 17,
+    fontWeight: "600" as const,
+    lineHeight: 22,
+    letterSpacing: -0.41,
+  },
+  body: {
+    fontSize: 17,
+    fontWeight: "400" as const,
+    lineHeight: 22,
+    letterSpacing: -0.41,
+  },
+  callout: {
+    fontSize: 16,
+    fontWeight: "400" as const,
+    lineHeight: 21,
+    letterSpacing: -0.32,
+  },
+  subheadline: {
+    fontSize: 15,
+    fontWeight: "400" as const,
+    lineHeight: 20,
+    letterSpacing: -0.24,
+  },
+  footnote: {
+    fontSize: 13,
+    fontWeight: "400" as const,
+    lineHeight: 18,
+    letterSpacing: -0.08,
+  },
+  caption1: {
+    fontSize: 12,
+    fontWeight: "400" as const,
+    lineHeight: 16,
+    letterSpacing: 0,
+  },
+  caption2: {
+    fontSize: 11,
+    fontWeight: "400" as const,
+    lineHeight: 13,
+    letterSpacing: 0.07,
+  },
+};
+
+export const Shadows = {
+  sm: {
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  md: {
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  lg: {
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 10,
+  },
+  glow: {
+    shadowColor: "#00D9FF",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 20,
+    elevation: 10,
+  },
+};
