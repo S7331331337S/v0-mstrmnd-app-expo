@@ -28,7 +28,7 @@ interface AppState {
   messages: Message[];
   credits: number;
   maxCredits: number;
-  user: { name: string } | null;
+  user: { name: string; avatar?: string } | null;
   isOnboarded: boolean;
 
   runLogs: string[];
@@ -42,24 +42,72 @@ interface AppState {
   setOnboarded: (value: boolean) => void;
 }
 
-export const useAppStore = create<AppState>((set, get) => ({
-  projects: [],
+export const useAppStore = create<AppState>((set) => ({
+  projects: [
+    {
+      id: "1",
+      name: "AI Image Generator",
+      createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+      updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+      status: "ready",
+      version: 2,
+      isFavorite: true,
+    },
+    {
+      id: "2",
+      name: "3D Abstract City",
+      createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+      updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+      status: "ready",
+      version: 1,
+      isFavorite: true,
+    },
+    {
+      id: "3",
+      name: "Portfolio Template",
+      createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+      updatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+      status: "ready",
+      version: 3,
+      isFavorite: false,
+    },
+    {
+      id: "4",
+      name: "Chess Game",
+      createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+      updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+      status: "building",
+      version: 1,
+      isFavorite: false,
+    },
+    {
+      id: "5",
+      name: "E-commerce Dashboard",
+      createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
+      updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+      status: "ready",
+      version: 5,
+      isFavorite: false,
+    },
+  ],
   currentProject: null,
   messages: [],
   credits: 3.73,
   maxCredits: 5,
   user: { name: "mstrmnd" },
   isOnboarded: true,
-
   runLogs: [],
 
   runDemoPipeline: async () => {
+    set({ runLogs: ["Starting runtime..."] });
+
     const result = await runPipeline(
       {
         id: "demo",
         nodes: [
           { id: "1", type: "agent", agentId: "director-agent" },
           { id: "2", type: "agent", agentId: "prompt-agent" },
+          { id: "3", type: "agent", agentId: "dev-agent" },
         ],
       },
       defaultAgents
