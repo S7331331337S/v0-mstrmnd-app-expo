@@ -28,26 +28,46 @@ export type RunResult = {
   output: RunOutput;
 };
 
-export async function runPipeline(pipeline: Pipeline, agents: Agent[]): Promise<RunResult> {
+export type PipelineRuntimeEvents = {
+  onLog?: (log: string) => void;
+  onOutput?: (output: RunOutput) => void;
+};
+
+export async function runPipeline(
+  pipeline: Pipeline,
+  agents: Agent[],
+  events: PipelineRuntimeEvents = {}
+): Promise<RunResult> {
   const logs: string[] = [];
-  let memory = createRuntimeMemory(pipeline.goal || "Build a premium MSTRMND creative operating system output.");
+  let memory = createRuntimeMemory(
+    pipeline.goal || "Build a premium MSTRMND creative operating system output."
+  );
   let output = createOutput();
 
-  logs.push("Starting pipeline...");
-  logs.push(`Goal: ${memory.goal}`);
+  const log = (value: string) => {
+    logs.push(value);
+    events.onLog?.(value);
+  };
+
+  const emitOutput = () => {
+    events.onOutput?.(output);
+  };
+
+  log("Starting pipeline...");
+  log(`Goal: ${memory.goal}`);
 
   for (const node of pipeline.nodes) {
     if (node.type === "input") {
       const inputValue = node.config?.value || "Input received.";
       memory = addMemoryContext(memory, inputValue);
-      logs.push(`Input: ${inputValue}`);
+      log(`Input: ${inputValue}`);
     }
 
     if (node.type === "agent" && node.agentId) {
       const agent = agents.find((a) => a.id === node.agentId);
       if (!agent) continue;
 
-      logs.push(`Running agent: ${agent.name}`);
+      log(`Running agent: ${agent.name}`);
 
       const result = await generateWithGemini({
         system: agent.systemPrompt,
@@ -56,17 +76,18 @@ export async function runPipeline(pipeline: Pipeline, agents: Agent[]): Promise<
 
       output = addStep(output, agent.name, result.text);
       memory = addMemoryOutput(memory, `${agent.name}: ${result.text}`);
-      logs.push(`Completed agent: ${agent.name}`);
+      emitOutput();
+      log(`Completed agent: ${agent.name}`);
     }
 
     if (node.type === "transform") {
       const transformNote = node.config?.label || "Transform completed.";
       memory = addMemoryContext(memory, transformNote);
-      logs.push(transformNote);
+      log(transformNote);
     }
   }
 
-  logs.push("Pipeline complete.");
+  log("Pipeline complete.");
 
   return {
     id: Date.now().toString(),
