@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import { defaultAgents } from "../lib/ai/agents";
 import { runPipeline } from "../lib/pipeline/runtime";
+import type { RunOutput } from "../lib/runtime/output";
+import { persistRun } from "../lib/supabase/client";
 
 export interface Project {
   id: string;
@@ -32,6 +34,8 @@ interface AppState {
   isOnboarded: boolean;
 
   runLogs: string[];
+  runOutput: RunOutput | null;
+
   runDemoPipeline: () => Promise<void>;
 
   setCurrentProject: (project: Project | null) => void;
@@ -62,33 +66,6 @@ export const useAppStore = create<AppState>((set) => ({
       version: 1,
       isFavorite: true,
     },
-    {
-      id: "3",
-      name: "Portfolio Template",
-      createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-      updatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-      status: "ready",
-      version: 3,
-      isFavorite: false,
-    },
-    {
-      id: "4",
-      name: "Chess Game",
-      createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
-      updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
-      status: "building",
-      version: 1,
-      isFavorite: false,
-    },
-    {
-      id: "5",
-      name: "E-commerce Dashboard",
-      createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
-      updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-      status: "ready",
-      version: 5,
-      isFavorite: false,
-    },
   ],
   currentProject: null,
   messages: [],
@@ -97,14 +74,17 @@ export const useAppStore = create<AppState>((set) => ({
   user: { name: "mstrmnd" },
   isOnboarded: true,
   runLogs: [],
+  runOutput: null,
 
   runDemoPipeline: async () => {
-    set({ runLogs: ["Starting runtime..."] });
+    set({ runLogs: ["Starting runtime..."], runOutput: null });
 
     const result = await runPipeline(
       {
         id: "demo",
+        goal: "Generate a high-end creative output using multi-agent reasoning.",
         nodes: [
+          { id: "input", type: "input", config: { value: "User initiated creative task." } },
           { id: "1", type: "agent", agentId: "director-agent" },
           { id: "2", type: "agent", agentId: "prompt-agent" },
           { id: "3", type: "agent", agentId: "dev-agent" },
@@ -113,7 +93,14 @@ export const useAppStore = create<AppState>((set) => ({
       defaultAgents
     );
 
-    set({ runLogs: result.logs });
+    set({ runLogs: result.logs, runOutput: result.output });
+
+    await persistRun({
+      pipelineId: "demo",
+      status: result.status,
+      logs: result.logs,
+      output: result.output,
+    });
   },
 
   setCurrentProject: (project) => set({ currentProject: project }),
