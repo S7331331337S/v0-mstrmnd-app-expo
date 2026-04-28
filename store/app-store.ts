@@ -33,6 +33,7 @@ interface AppState {
   user: { name: string; avatar?: string } | null;
   isOnboarded: boolean;
 
+  isRuntimeRunning: boolean;
   runLogs: string[];
   runOutput: RunOutput | null;
 
@@ -73,34 +74,53 @@ export const useAppStore = create<AppState>((set) => ({
   maxCredits: 5,
   user: { name: "mstrmnd" },
   isOnboarded: true,
+  isRuntimeRunning: false,
   runLogs: [],
   runOutput: null,
 
   runDemoPipeline: async () => {
-    set({ runLogs: ["Starting runtime..."], runOutput: null });
+    set({ isRuntimeRunning: true, runLogs: [], runOutput: null });
 
-    const result = await runPipeline(
-      {
-        id: "demo",
-        goal: "Generate a high-end creative output using multi-agent reasoning.",
-        nodes: [
-          { id: "input", type: "input", config: { value: "User initiated creative task." } },
-          { id: "1", type: "agent", agentId: "director-agent" },
-          { id: "2", type: "agent", agentId: "prompt-agent" },
-          { id: "3", type: "agent", agentId: "dev-agent" },
-        ],
-      },
-      defaultAgents
-    );
+    const appendLog = (log: string) => {
+      set((state) => ({ runLogs: [...state.runLogs, log] }));
+    };
 
-    set({ runLogs: result.logs, runOutput: result.output });
+    const updateOutput = (output: RunOutput) => {
+      set({ runOutput: output });
+    };
 
-    await persistRun({
-      pipelineId: "demo",
-      status: result.status,
-      logs: result.logs,
-      output: result.output,
-    });
+    try {
+      const result = await runPipeline(
+        {
+          id: "demo",
+          goal: "Generate a high-end creative output using multi-agent reasoning.",
+          nodes: [
+            { id: "input", type: "input", config: { value: "User initiated creative task." } },
+            { id: "1", type: "agent", agentId: "director-agent" },
+            { id: "2", type: "agent", agentId: "prompt-agent" },
+            { id: "3", type: "agent", agentId: "dev-agent" },
+          ],
+        },
+        defaultAgents,
+        {
+          onLog: appendLog,
+          onOutput: updateOutput,
+        }
+      );
+
+      set({ runOutput: result.output });
+
+      await persistRun({
+        pipelineId: "demo",
+        status: result.status,
+        logs: result.logs,
+        output: result.output,
+      });
+    } catch (error) {
+      appendLog(error instanceof Error ? error.message : "Runtime failed.");
+    } finally {
+      set({ isRuntimeRunning: false });
+    }
   },
 
   setCurrentProject: (project) => set({ currentProject: project }),
