@@ -52,6 +52,21 @@ create index if not exists idx_agents_project_id on public.agents(project_id);
 create index if not exists idx_runs_project_id on public.runs(project_id);
 create index if not exists idx_runs_created_at on public.runs(created_at desc);
 
+create or replace function public.is_project_owner(target_project_id uuid)
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1
+    from public.projects p
+    where p.id = target_project_id
+      and p.user_id = auth.uid()
+  );
+$$;
+
 create or replace function public.set_updated_at()
 returns trigger
 language plpgsql
@@ -101,156 +116,51 @@ using (auth.uid() = user_id);
 
 create policy if not exists "pipelines_select_own"
 on public.pipelines for select
-using (
-  exists (
-    select 1
-    from public.projects p
-    where p.id = pipelines.project_id
-      and p.user_id = auth.uid()
-  )
-);
+using (public.is_project_owner(project_id));
 
 create policy if not exists "pipelines_insert_own"
 on public.pipelines for insert
-with check (
-  exists (
-    select 1
-    from public.projects p
-    where p.id = pipelines.project_id
-      and p.user_id = auth.uid()
-  )
-);
+with check (public.is_project_owner(project_id));
 
 create policy if not exists "pipelines_update_own"
 on public.pipelines for update
-using (
-  exists (
-    select 1
-    from public.projects p
-    where p.id = pipelines.project_id
-      and p.user_id = auth.uid()
-  )
-)
-with check (
-  exists (
-    select 1
-    from public.projects p
-    where p.id = pipelines.project_id
-      and p.user_id = auth.uid()
-  )
-);
+using (public.is_project_owner(project_id))
+with check (public.is_project_owner(project_id));
 
 create policy if not exists "pipelines_delete_own"
 on public.pipelines for delete
-using (
-  exists (
-    select 1
-    from public.projects p
-    where p.id = pipelines.project_id
-      and p.user_id = auth.uid()
-  )
-);
+using (public.is_project_owner(project_id));
 
 create policy if not exists "agents_select_own"
 on public.agents for select
-using (
-  exists (
-    select 1
-    from public.projects p
-    where p.id = agents.project_id
-      and p.user_id = auth.uid()
-  )
-);
+using (public.is_project_owner(project_id));
 
 create policy if not exists "agents_insert_own"
 on public.agents for insert
-with check (
-  exists (
-    select 1
-    from public.projects p
-    where p.id = agents.project_id
-      and p.user_id = auth.uid()
-  )
-);
+with check (public.is_project_owner(project_id));
 
 create policy if not exists "agents_update_own"
 on public.agents for update
-using (
-  exists (
-    select 1
-    from public.projects p
-    where p.id = agents.project_id
-      and p.user_id = auth.uid()
-  )
-)
-with check (
-  exists (
-    select 1
-    from public.projects p
-    where p.id = agents.project_id
-      and p.user_id = auth.uid()
-  )
-);
+using (public.is_project_owner(project_id))
+with check (public.is_project_owner(project_id));
 
 create policy if not exists "agents_delete_own"
 on public.agents for delete
-using (
-  exists (
-    select 1
-    from public.projects p
-    where p.id = agents.project_id
-      and p.user_id = auth.uid()
-  )
-);
+using (public.is_project_owner(project_id));
 
 create policy if not exists "runs_select_own"
 on public.runs for select
-using (
-  exists (
-    select 1
-    from public.projects p
-    where p.id = runs.project_id
-      and p.user_id = auth.uid()
-  )
-);
+using (public.is_project_owner(project_id));
 
 create policy if not exists "runs_insert_own"
 on public.runs for insert
-with check (
-  exists (
-    select 1
-    from public.projects p
-    where p.id = runs.project_id
-      and p.user_id = auth.uid()
-  )
-);
+with check (public.is_project_owner(project_id));
 
 create policy if not exists "runs_update_own"
 on public.runs for update
-using (
-  exists (
-    select 1
-    from public.projects p
-    where p.id = runs.project_id
-      and p.user_id = auth.uid()
-  )
-)
-with check (
-  exists (
-    select 1
-    from public.projects p
-    where p.id = runs.project_id
-      and p.user_id = auth.uid()
-  )
-);
+using (public.is_project_owner(project_id))
+with check (public.is_project_owner(project_id));
 
 create policy if not exists "runs_delete_own"
 on public.runs for delete
-using (
-  exists (
-    select 1
-    from public.projects p
-    where p.id = runs.project_id
-      and p.user_id = auth.uid()
-  )
-);
+using (public.is_project_owner(project_id));

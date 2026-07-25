@@ -102,6 +102,8 @@ const demoProjects: Project[] = [
   },
 ];
 
+const DEMO_PROJECT_PREFIX = "demo-project-";
+
 function toProject(record: ProjectRecord): Project {
   return {
     id: record.id,
@@ -306,7 +308,10 @@ export const useAppStore = create<AppState>((set, get) => ({
 
     const project = toProject(result.data);
     set((currentState) => ({
-      projects: [project, ...currentState.projects.filter((item) => !item.id.startsWith("demo-project-"))],
+      projects: [
+        project,
+        ...currentState.projects.filter((item) => !item.id.startsWith(DEMO_PROJECT_PREFIX)),
+      ],
       currentProject: project,
     }));
 

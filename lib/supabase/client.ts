@@ -96,10 +96,12 @@ function toAuthUser(user: User | null): AuthUser | null {
       ? user.user_metadata.full_name
       : undefined;
 
+  const emailPrefix = user.email.split("@")[0]?.trim();
+
   return {
     id: user.id,
     email: user.email,
-    name: fromMeta || user.email.split("@")[0] || "User",
+    name: fromMeta || emailPrefix || "User",
   };
 }
 
