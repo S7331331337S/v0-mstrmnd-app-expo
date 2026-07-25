@@ -21,6 +21,8 @@ import {
   ChevronRight,
   Zap,
   ExternalLink,
+  Bot,
+  BarChart2,
 } from "lucide-react-native";
 import { Colors, Typography, BorderRadius } from "@/constants/theme";
 import { useAppStore } from "@/store/app-store";
@@ -40,7 +42,7 @@ interface SettingsItem {
 
 export default function SettingsScreen() {
   const router = useRouter();
-  const { user, credits, maxCredits } = useAppStore();
+  const { user, credits, maxCredits, signOut: storeSignOut } = useAppStore();
   const [darkMode, setDarkMode] = React.useState(true);
   const [notifications, setNotifications] = React.useState(true);
 
@@ -58,6 +60,18 @@ export default function SettingsScreen() {
       label: "Subscription",
       value: "Free Plan",
       onPress: () => {},
+    },
+    {
+      id: "agents",
+      icon: <Bot size={20} color={Colors.dark.foreground} />,
+      label: "Agents",
+      onPress: () => router.push("/ai/agents"),
+    },
+    {
+      id: "usage",
+      icon: <BarChart2 size={20} color={Colors.dark.foreground} />,
+      label: "Usage",
+      onPress: () => router.push("/ai/usage"),
     },
   ];
 
@@ -104,7 +118,10 @@ export default function SettingsScreen() {
       icon: <LogOut size={20} color={Colors.dark.error} />,
       label: "Sign Out",
       danger: true,
-      onPress: () => {},
+      onPress: () => {
+        haptic.medium();
+        storeSignOut();
+      },
     },
   ];
 

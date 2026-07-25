@@ -23,9 +23,18 @@ export type Pipeline = {
 
 export type RunResult = {
   id: string;
-  status: "queued" | "running" | "completed" | "failed";
+  projectId?: string;
+  pipelineId: string;
+  status: "queued" | "running" | "waiting_for_approval" | "completed" | "failed";
   logs: string[];
   output: RunOutput;
+  usage: {
+    provider?: string;
+    model?: string;
+    inputTokens?: number;
+    outputTokens?: number;
+    estimatedCost?: number;
+  };
 };
 
 export type PipelineRuntimeEvents = {
@@ -91,8 +100,13 @@ export async function runPipeline(
 
   return {
     id: Date.now().toString(),
+    pipelineId: pipeline.id,
     status: "completed",
     logs,
     output,
+    usage: {
+      provider: "google",
+      model: "gemini-2.5-flash",
+    },
   };
 }
