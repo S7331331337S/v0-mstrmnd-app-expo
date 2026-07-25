@@ -1,6 +1,10 @@
 import React, { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
+<<<<<<< HEAD
 import { Stack, useRouter, useSegments } from "expo-router";
+=======
+import { Stack } from "expo-router";
+>>>>>>> origin/main
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { StyleSheet } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
@@ -11,6 +15,7 @@ import { useAppStore } from "@/store/app-store";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+<<<<<<< HEAD
   const router = useRouter();
   const segments = useSegments();
   const { initializeSession, watchSession, isAuthenticated, isAuthReady } = useAppStore();
@@ -18,6 +23,13 @@ export default function RootLayout() {
   useEffect(() => {
     initializeSession();
     const unsubscribe = watchSession();
+=======
+  const initAuth = useAppStore((s) => s.initAuth);
+
+  useEffect(() => {
+    // Initialise auth and subscribe to changes
+    const unsubscribe = initAuth();
+>>>>>>> origin/main
 
     // Hide splash screen after a short delay
     const hideSplash = async () => {
@@ -27,6 +39,7 @@ export default function RootLayout() {
     hideSplash();
 
     return unsubscribe;
+<<<<<<< HEAD
   }, [initializeSession, watchSession]);
 
   useEffect(() => {
@@ -45,6 +58,9 @@ export default function RootLayout() {
       router.replace("/(tabs)");
     }
   }, [isAuthReady, isAuthenticated, router, segments]);
+=======
+  }, []);
+>>>>>>> origin/main
 
   return (
     <GestureHandlerRootView style={styles.container}>
@@ -56,8 +72,11 @@ export default function RootLayout() {
           animation: "fade",
         }}
       >
+<<<<<<< HEAD
         <Stack.Screen name="auth/login" options={{ presentation: "card" }} />
         <Stack.Screen name="auth/signup" options={{ presentation: "card" }} />
+=======
+>>>>>>> origin/main
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
           name="project/[id]"
@@ -67,6 +86,23 @@ export default function RootLayout() {
           }}
         />
         <Stack.Screen
+<<<<<<< HEAD
+=======
+          name="ai/agents"
+          options={{
+            presentation: "card",
+            animation: "slide_from_right",
+          }}
+        />
+        <Stack.Screen
+          name="ai/usage"
+          options={{
+            presentation: "card",
+            animation: "slide_from_right",
+          }}
+        />
+        <Stack.Screen
+>>>>>>> origin/main
           name="onboarding"
           options={{
             presentation: "fullScreenModal",

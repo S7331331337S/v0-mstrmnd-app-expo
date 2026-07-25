@@ -10,9 +10,23 @@ export type MultiAgentEvents = {
 
 export type MultiAgentResult = {
   id: string;
+<<<<<<< HEAD
   status: "completed" | "failed";
   logs: string[];
   output: RunOutput;
+=======
+  pipelineId: string;
+  status: "completed" | "failed";
+  logs: string[];
+  output: RunOutput;
+  usage: {
+    provider?: string;
+    model?: string;
+    inputTokens?: number;
+    outputTokens?: number;
+    estimatedCost?: number;
+  };
+>>>>>>> origin/main
 };
 
 export async function runMultiAgentMode(agents: Agent[], events: MultiAgentEvents = {}): Promise<MultiAgentResult> {
@@ -66,8 +80,19 @@ export async function runMultiAgentMode(agents: Agent[], events: MultiAgentEvent
 
   return {
     id: Date.now().toString(),
+<<<<<<< HEAD
     status: "completed",
     logs,
     output,
+=======
+    pipelineId: "multi-agent",
+    status: "completed",
+    logs,
+    output,
+    usage: {
+      provider: "google",
+      model: "gemini-2.5-flash",
+    },
+>>>>>>> origin/main
   };
 }

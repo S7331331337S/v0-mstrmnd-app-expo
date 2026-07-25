@@ -1,5 +1,6 @@
 export const Colors = {
   dark: {
+<<<<<<< HEAD
     background: "#000000",
     foreground: "#FFFFFF",
     card: "#0A0A0F",
@@ -15,6 +16,24 @@ export const Colors = {
     error: "#EF4444",
     secondary: "#1C1C1E",
     tertiary: "#2C2C2E",
+=======
+    background: "#070708",
+    foreground: "#FFFFFF",
+    card: "#111114",
+    cardForeground: "#FFFFFF",
+    muted: "#17171C",
+    mutedForeground: "#71717A",
+    accent: "#00E0FF",
+    accentForeground: "#000000",
+    accentViolet: "#7C5CFF",
+    border: "#292934",
+    ring: "#00E0FF",
+    success: "#22C55E",
+    warning: "#F59E0B",
+    error: "#EF4444",
+    secondary: "#111114",
+    tertiary: "#17171C",
+>>>>>>> origin/main
   },
   light: {
     background: "#FFFFFF",

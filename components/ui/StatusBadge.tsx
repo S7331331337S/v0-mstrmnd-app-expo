@@ -8,7 +8,11 @@ import Animated, {
 } from "react-native-reanimated";
 import { Colors, BorderRadius, Typography } from "@/constants/theme";
 
+<<<<<<< HEAD
 type StatusType = "ready" | "building" | "error" | "pending";
+=======
+type StatusType = "ready" | "building" | "error" | "pending" | "draft";
+>>>>>>> origin/main
 
 interface StatusBadgeProps {
   status: StatusType;
@@ -58,6 +62,15 @@ export function StatusBadge({ status, label }: StatusBadgeProps) {
           text: label || "Pending",
           bgColor: "rgba(113, 113, 122, 0.15)",
         };
+<<<<<<< HEAD
+=======
+      case "draft":
+        return {
+          color: Colors.dark.mutedForeground,
+          text: label || "Draft",
+          bgColor: "rgba(113, 113, 122, 0.1)",
+        };
+>>>>>>> origin/main
       default:
         return {
           color: Colors.dark.mutedForeground,

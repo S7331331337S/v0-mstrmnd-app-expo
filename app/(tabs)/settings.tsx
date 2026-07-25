@@ -21,6 +21,11 @@ import {
   ChevronRight,
   Zap,
   ExternalLink,
+<<<<<<< HEAD
+=======
+  Bot,
+  BarChart2,
+>>>>>>> origin/main
 } from "lucide-react-native";
 import { Colors, Typography, BorderRadius } from "@/constants/theme";
 import { useAppStore } from "@/store/app-store";
@@ -40,7 +45,11 @@ interface SettingsItem {
 
 export default function SettingsScreen() {
   const router = useRouter();
+<<<<<<< HEAD
   const { user, credits, maxCredits, signOutUser } = useAppStore();
+=======
+  const { user, credits, maxCredits, signOut: storeSignOut } = useAppStore();
+>>>>>>> origin/main
   const [darkMode, setDarkMode] = React.useState(true);
   const [notifications, setNotifications] = React.useState(true);
 
@@ -59,6 +68,21 @@ export default function SettingsScreen() {
       value: "Free Plan",
       onPress: () => {},
     },
+<<<<<<< HEAD
+=======
+    {
+      id: "agents",
+      icon: <Bot size={20} color={Colors.dark.foreground} />,
+      label: "Agents",
+      onPress: () => router.push("/ai/agents"),
+    },
+    {
+      id: "usage",
+      icon: <BarChart2 size={20} color={Colors.dark.foreground} />,
+      label: "Usage",
+      onPress: () => router.push("/ai/usage"),
+    },
+>>>>>>> origin/main
   ];
 
   const preferencesItems: SettingsItem[] = [
@@ -104,9 +128,15 @@ export default function SettingsScreen() {
       icon: <LogOut size={20} color={Colors.dark.error} />,
       label: "Sign Out",
       danger: true,
+<<<<<<< HEAD
       onPress: async () => {
         await signOutUser();
         router.replace("/auth/login" as never);
+=======
+      onPress: () => {
+        haptic.medium();
+        storeSignOut();
+>>>>>>> origin/main
       },
     },
   ];

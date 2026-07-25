@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   createClient,
@@ -5,12 +6,16 @@ import {
   type SupabaseClient,
   type User,
 } from "@supabase/supabase-js";
+=======
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
+>>>>>>> origin/main
 
 type RuntimeSupabaseConfig = {
   url?: string;
   anonKey?: string;
 };
 
+<<<<<<< HEAD
 export type AuthUser = {
   id: string;
   email: string;
@@ -54,6 +59,12 @@ export function getSupabaseConfig(): RuntimeSupabaseConfig {
   return {
     url: env?.EXPO_PUBLIC_SUPABASE_URL,
     anonKey: env?.EXPO_PUBLIC_SUPABASE_ANON_KEY,
+=======
+export function getSupabaseConfig(): RuntimeSupabaseConfig {
+  return {
+    url: process.env.EXPO_PUBLIC_SUPABASE_URL,
+    anonKey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY,
+>>>>>>> origin/main
   };
 }
 
@@ -62,6 +73,7 @@ export function hasSupabaseConfig() {
   return Boolean(config.url && config.anonKey);
 }
 
+<<<<<<< HEAD
 export function getSupabaseClient() {
   if (!hasSupabaseConfig()) {
     return null;
@@ -337,6 +349,39 @@ export async function persistRun(payload: {
 }): Promise<SupabaseResult<RunRecord>> {
   const supabase = getSupabaseClient();
   if (!supabase) {
+=======
+let _client: SupabaseClient | null = null;
+
+export function getSupabaseClient(): SupabaseClient | null {
+  if (_client) return _client;
+  const config = getSupabaseConfig();
+  if (!config.url || !config.anonKey) return null;
+  _client = createClient(config.url, config.anonKey, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+    },
+  });
+  return _client;
+}
+
+export async function persistRun(payload: {
+  pipelineId: string;
+  projectId?: string;
+  status: string;
+  logs: string[];
+  output: unknown;
+  usage?: {
+    provider?: string;
+    model?: string;
+    inputTokens?: number;
+    outputTokens?: number;
+    estimatedCost?: number;
+  };
+}) {
+  const client = getSupabaseClient();
+  if (!client) {
+>>>>>>> origin/main
     return {
       ok: false,
       skipped: true,
@@ -344,16 +389,24 @@ export async function persistRun(payload: {
     };
   }
 
+<<<<<<< HEAD
   const { data, error } = await supabase
     .from("runs")
     .insert({
       project_id: payload.projectId,
       pipeline_id: payload.pipelineId ?? null,
+=======
+  const { data, error } = await client
+    .from("runs")
+    .insert({
+      pipeline_id: payload.pipelineId,
+>>>>>>> origin/main
       status: payload.status,
       logs: payload.logs,
       output: payload.output,
       usage: payload.usage ?? null,
     })
+<<<<<<< HEAD
     .select("*")
     .single();
 
@@ -393,4 +446,101 @@ export async function getRuns(payload: {
 
 export function userFromSession(session: Session | null) {
   return toAuthUser(session?.user ?? null);
+=======
+    .select("id")
+    .single();
+
+  if (error) {
+    return { ok: false, skipped: false, reason: error.message };
+  }
+
+  return { ok: true, skipped: false, id: data.id };
+}
+
+export async function persistProject(payload: {
+  name: string;
+  slug?: string;
+  organizationId?: string;
+}) {
+  const client = getSupabaseClient();
+  if (!client) {
+    return { ok: false, skipped: true, reason: "Supabase env vars missing." };
+  }
+
+  const { data, error } = await client
+    .from("projects")
+    .insert({
+      name: payload.name,
+      slug: payload.slug ?? payload.name.toLowerCase().replace(/\s+/g, "-"),
+      organization_id: payload.organizationId ?? null,
+    })
+    .select("id")
+    .single();
+
+  if (error) {
+    return { ok: false, skipped: false, reason: error.message };
+  }
+
+  return { ok: true, skipped: false, id: data.id };
+}
+
+export async function persistPipeline(payload: {
+  projectId: string;
+  graph: unknown;
+}) {
+  const client = getSupabaseClient();
+  if (!client) {
+    return { ok: false, skipped: true, reason: "Supabase env vars missing." };
+  }
+
+  const { data, error } = await client
+    .from("pipelines")
+    .insert({
+      project_id: payload.projectId,
+      graph: payload.graph,
+    })
+    .select("id")
+    .single();
+
+  if (error) {
+    return { ok: false, skipped: false, reason: error.message };
+  }
+
+  return { ok: true, skipped: false, id: data.id };
+}
+
+export async function persistAgent(payload: {
+  projectId: string;
+  name: string;
+  role: string;
+  provider: string;
+  model: string;
+  tools: string[];
+  config?: Record<string, unknown>;
+}) {
+  const client = getSupabaseClient();
+  if (!client) {
+    return { ok: false, skipped: true, reason: "Supabase env vars missing." };
+  }
+
+  const { data, error } = await client
+    .from("agents")
+    .insert({
+      project_id: payload.projectId,
+      name: payload.name,
+      role: payload.role,
+      provider: payload.provider,
+      model: payload.model,
+      tools: payload.tools,
+      config: payload.config ?? null,
+    })
+    .select("id")
+    .single();
+
+  if (error) {
+    return { ok: false, skipped: false, reason: error.message };
+  }
+
+  return { ok: true, skipped: false, id: data.id };
+>>>>>>> origin/main
 }
