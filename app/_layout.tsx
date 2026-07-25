@@ -5,18 +5,26 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { StyleSheet } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import { Colors } from "@/constants/theme";
+import { useAppStore } from "@/store/app-store";
 
 // Prevent splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const initAuth = useAppStore((s) => s.initAuth);
+
   useEffect(() => {
+    // Initialise auth and subscribe to changes
+    const unsubscribe = initAuth();
+
     // Hide splash screen after a short delay
     const hideSplash = async () => {
       await new Promise((resolve) => setTimeout(resolve, 500));
       await SplashScreen.hideAsync();
     };
     hideSplash();
+
+    return unsubscribe;
   }, []);
 
   return (
@@ -32,6 +40,20 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
           name="project/[id]"
+          options={{
+            presentation: "card",
+            animation: "slide_from_right",
+          }}
+        />
+        <Stack.Screen
+          name="ai/agents"
+          options={{
+            presentation: "card",
+            animation: "slide_from_right",
+          }}
+        />
+        <Stack.Screen
+          name="ai/usage"
           options={{
             presentation: "card",
             animation: "slide_from_right",
