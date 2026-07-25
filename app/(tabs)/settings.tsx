@@ -40,7 +40,7 @@ interface SettingsItem {
 
 export default function SettingsScreen() {
   const router = useRouter();
-  const { user, credits, maxCredits } = useAppStore();
+  const { user, credits, maxCredits, signOutUser } = useAppStore();
   const [darkMode, setDarkMode] = React.useState(true);
   const [notifications, setNotifications] = React.useState(true);
 
@@ -104,7 +104,10 @@ export default function SettingsScreen() {
       icon: <LogOut size={20} color={Colors.dark.error} />,
       label: "Sign Out",
       danger: true,
-      onPress: () => {},
+      onPress: async () => {
+        await signOutUser();
+        router.replace("/auth/login" as never);
+      },
     },
   ];
 
