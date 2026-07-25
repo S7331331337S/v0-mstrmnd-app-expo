@@ -7,6 +7,7 @@ import type { RunOutput } from "../lib/runtime/output";
 import { persistRun, persistProject, persistPipeline } from "../lib/supabase/client";
 import { signInWithEmail, signUpWithEmail, signOut, onAuthStateChange, getSession } from "../lib/supabase/auth";
 import { UsageEvent, createUsageEvent, costToCredits } from "../lib/usage/meter";
+import { generateId } from "../utils/id";
 
 export type Project = {
   id: string;
@@ -158,7 +159,7 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   addProject: async (name) => {
     const project: Project = {
-      id: Date.now().toString(),
+      id: generateId(),
       name,
       slug: name.toLowerCase().replace(/\s+/g, "-"),
       status: "draft",

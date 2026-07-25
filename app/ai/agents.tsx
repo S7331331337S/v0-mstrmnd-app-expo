@@ -15,7 +15,6 @@ import {
   ArrowLeft,
   Plus,
   Trash2,
-  ChevronRight,
   Bot,
   Pencil,
 } from "lucide-react-native";
@@ -23,6 +22,7 @@ import { Colors, Typography, BorderRadius } from "@/constants/theme";
 import { useAppStore } from "@/store/app-store";
 import type { Agent, AgentProvider, AgentTool } from "@/lib/ai/agents";
 import { haptic } from "@/utils/haptics";
+import { generateId } from "@/utils/id";
 
 const PROVIDERS: AgentProvider[] = ["openai", "anthropic", "google", "local"];
 const TOOLS: AgentTool[] = ["files", "web", "figma", "vercel", "github", "supabase", "media"];
@@ -42,7 +42,7 @@ export default function AgentsScreen() {
     if (!name.trim() || !role.trim()) return;
     haptic.success();
     addAgent({
-      id: Date.now().toString(),
+      id: generateId(),
       name: name.trim(),
       role: role.trim(),
       provider,

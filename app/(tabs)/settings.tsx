@@ -65,13 +65,13 @@ export default function SettingsScreen() {
       id: "agents",
       icon: <Bot size={20} color={Colors.dark.foreground} />,
       label: "Agents",
-      onPress: () => router.push({ pathname: "/ai/agents" } as any),
+      onPress: () => router.push("/ai/agents"),
     },
     {
       id: "usage",
       icon: <BarChart2 size={20} color={Colors.dark.foreground} />,
       label: "Usage",
-      onPress: () => router.push({ pathname: "/ai/usage" } as any),
+      onPress: () => router.push("/ai/usage"),
     },
   ];
 
