@@ -20,7 +20,6 @@ yarn dev
 pnpm dev
 ```
 
-<<<<<<< HEAD
 For web:
 
 ```bash
@@ -40,9 +39,8 @@ EXPO_PUBLIC_GEMINI_API_KEY=
 ```
 
 Without Supabase env vars, the app still runs in local fallback mode (no remote persistence).
-=======
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
->>>>>>> origin/main
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
