@@ -20,6 +20,26 @@ yarn dev
 pnpm dev
 ```
 
+For web:
+
+```bash
+pnpm web
+```
+
+### Supabase setup
+
+1. Create a Supabase project.
+2. Run `/supabase/schema.sql` in the Supabase SQL editor.
+3. Copy `.env.example` to `.env.local` and set:
+
+```bash
+EXPO_PUBLIC_SUPABASE_URL=
+EXPO_PUBLIC_SUPABASE_ANON_KEY=
+EXPO_PUBLIC_GEMINI_API_KEY=
+```
+
+Without Supabase env vars, the app still runs in local fallback mode (no remote persistence).
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.

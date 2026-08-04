@@ -36,7 +36,7 @@ interface OnboardingSlide {
   title: string;
   subtitle: string;
   icon: React.ReactNode;
-  gradient: string[];
+  gradient: readonly [string, string, ...string[]];
 }
 
 const SLIDES: OnboardingSlide[] = [

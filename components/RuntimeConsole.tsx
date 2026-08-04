@@ -12,7 +12,7 @@ export function RuntimeConsole() {
         <Text style={styles.subtitle}>Agent pipeline console</Text>
       </View>
 
-      <Pressable style={styles.button} onPress={() => runDemoPipeline()}>
+      <Pressable style={styles.button} onPress={runDemoPipeline}>
         <Text style={styles.buttonText}>Run Pipeline</Text>
       </Pressable>
 
@@ -40,7 +40,7 @@ export function RuntimeConsole() {
         </View>
       )}
 
-      {runOutput && runOutput.steps && runOutput.steps.length > 0 && (
+      {runOutput?.steps && runOutput.steps.length > 0 && (
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Agent Steps</Text>
           {runOutput.steps.map((step, index) => (
